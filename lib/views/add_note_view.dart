@@ -48,6 +48,7 @@ class _AddNoteViewState extends State<AddNoteView> {
             ),
             TextFormField(
               controller: descriptionController,
+              maxLines: 15,
               decoration: InputDecoration(
                 labelText: 'Description',
                 hintText: "Enter your description...",
@@ -65,6 +66,7 @@ class _AddNoteViewState extends State<AddNoteView> {
                         title: titleController.text,
                         description: descriptionController.text)
                     .toMap());
+
                 Navigator.of(context).pop();
               },
               child: const Text('Add '),

@@ -4,10 +4,12 @@ import 'package:note_firebase/models/note.dart';
 
 class EditNoteView extends StatefulWidget {
   const EditNoteView({
+    required this.note,
     Key? key,
     required this.noteId,
   }) : super(key: key);
 
+  final Note? note;
   final String? noteId;
 
   @override
@@ -17,6 +19,13 @@ class EditNoteView extends StatefulWidget {
 class _EditNoteViewState extends State<EditNoteView> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    titleController.text = widget.note!.title!;
+    descriptionController.text = widget.note!.description!;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -29,7 +38,7 @@ class _EditNoteViewState extends State<EditNoteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Note '),
+        title: const Text('Edit Note'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0).copyWith(left: 24, right: 24),
@@ -38,7 +47,7 @@ class _EditNoteViewState extends State<EditNoteView> {
             TextFormField(
               controller: titleController,
               decoration: InputDecoration(
-                labelText: 'Title',
+                labelText: 'Update Title',
                 hintText: "Edit your title...",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -46,12 +55,13 @@ class _EditNoteViewState extends State<EditNoteView> {
               ),
             ),
             const SizedBox(
-              height: 8,
+              height: 12,
             ),
             TextFormField(
               controller: descriptionController,
+              maxLines: 15,
               decoration: InputDecoration(
-                labelText: 'Description',
+                labelText: 'Update Description',
                 hintText: "Edit your description...",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),

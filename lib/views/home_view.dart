@@ -19,29 +19,20 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home '),
+        title: const Text('Notes '),
+      ),
+      drawer: Drawer(
+        child: Column(),
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: firestore.collection('notes').snapshots(),
           builder: (context, snaphot) {
             final noteId = snaphot.data?.docs.map((note) => note.id).toList();
-            print(noteId);
 
             final notes = snaphot.data?.docs
                 .map(
                     (note) => Note.fromMap(note.data() as Map<String, dynamic>))
                 .toList();
-
-            print(notes);
-
-            if (!snaphot.hasData) {
-              return const Center(
-                child: Text('No Data Exists'),
-              );
-            }
-            if (snaphot.hasError) {
-              return const Text('Something went Wrong');
-            }
 
             if (snaphot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -49,39 +40,56 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
+            if (snaphot.hasError) {
+              return const Center(child: Text('Something Went Wrong'));
+            }
+            if (!snaphot.hasData) {
+              return const Center(
+                child: Text('Add New Data!'),
+              );
+            }
             return ListView.separated(
               separatorBuilder: (context, index) => const Divider(
-                height: 12,
-                color: Colors.black54,
-                thickness: 4.0,
+                height: 4,
+                color: Colors.brown,
               ),
               itemCount: notes?.length ?? 0,
               itemBuilder: (context, index) {
                 final note = notes![index];
+                final id = index + 1;
 
-                return ListTile(
-                  leading: const CircleAvatar(child: Text('')),
-                  title: Text(note.title!),
-                  trailing: IconButton(
-                    onPressed: () {
-                      firestore
-                          .collection('notes')
-                          .doc(noteId![index])
-                          .delete();
-                    },
-                    icon: const Icon(Icons.delete),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NoteDetailView(
-                          noteId: noteId![index],
-                          note: note,
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    onLongPress: () {},
+                    style: ListTileStyle.list,
+                    tileColor: Colors.orangeAccent,
+                    hoverColor: Colors.cyan,
+                    leading: CircleAvatar(
+                      child: Text(id.toString()),
+                    ),
+                    title: Text(note.title!),
+                    trailing: IconButton(
+                      onPressed: () {
+                        firestore
+                            .collection('notes')
+                            .doc(noteId![index])
+                            .delete();
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NoteDetailView(
+                            noteId: noteId![index],
+                            note: note,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 );
               },
             );
@@ -94,9 +102,7 @@ class _HomeViewState extends State<HomeView> {
         },
         child: const Icon(Icons.add),
       ),
+      backgroundColor: Colors.grey,
     );
   }
 }
-
-
-///___[final noteId = snapshot.data.docs().map(note=> note.Id).]

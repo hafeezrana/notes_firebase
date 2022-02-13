@@ -3,22 +3,19 @@ import 'dart:convert';
 class Note {
   String? title;
   String? description;
-  int? id;
+
   Note({
     this.title,
     this.description,
-    this.id,
   });
 
   Note copyWith({
     String? title,
     String? description,
-    int? id,
   }) {
     return Note(
       title: title ?? this.title,
       description: description ?? this.description,
-      id: id ?? this.id,
     );
   }
 
@@ -26,7 +23,6 @@ class Note {
     return {
       'title': title,
       'description': description,
-      'id': id,
     };
   }
 
@@ -34,7 +30,6 @@ class Note {
     return Note(
       title: map['title'],
       description: map['description'],
-      id: map['id']?.toInt(),
     );
   }
 
@@ -43,8 +38,7 @@ class Note {
   factory Note.fromJson(String source) => Note.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'Note(title: $title, description: $description, id: $id)';
+  String toString() => 'Note(title: $title, description: $description)';
 
   @override
   bool operator ==(Object other) {
@@ -52,10 +46,9 @@ class Note {
 
     return other is Note &&
         other.title == title &&
-        other.description == description &&
-        other.id == id;
+        other.description == description;
   }
 
   @override
-  int get hashCode => title.hashCode ^ description.hashCode ^ id.hashCode;
+  int get hashCode => title.hashCode ^ description.hashCode;
 }

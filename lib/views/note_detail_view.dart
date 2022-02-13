@@ -21,7 +21,7 @@ class _NoteDetailViewState extends State<NoteDetailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Page'),
+        title: Text(widget.note!.title!),
         actions: [
           IconButton(
             onPressed: () {
@@ -30,6 +30,7 @@ class _NoteDetailViewState extends State<NoteDetailView> {
                 MaterialPageRoute(
                   builder: (context) => EditNoteView(
                     noteId: widget.noteId,
+                    note: widget.note,
                   ),
                 ),
               );
@@ -38,8 +39,19 @@ class _NoteDetailViewState extends State<NoteDetailView> {
           ),
         ],
       ),
-      body: Center(
-        child: Text(widget.note!.description!),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Dialog(
+          backgroundColor: Colors.grey,
+          insetPadding: const EdgeInsets.all(8),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              widget.note!.description!,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w100),
+            ),
+          ),
+        ),
       ),
     );
   }
