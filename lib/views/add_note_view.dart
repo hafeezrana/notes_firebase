@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/note.dart';
 
@@ -23,6 +24,8 @@ class _AddNoteViewState extends State<AddNoteView> {
   }
 
   final firestore = FirebaseFirestore.instance;
+  final auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,10 +65,14 @@ class _AddNoteViewState extends State<AddNoteView> {
             ),
             ElevatedButton(
               onPressed: () {
-                firestore.collection('notes').add(Note(
-                        title: titleController.text,
-                        description: descriptionController.text)
-                    .toMap());
+                firestore
+                    .collection('users')
+                    .doc(auth.currentUser!.uid)
+                    .collection('notes')
+                    .add(Note(
+                            title: titleController.text,
+                            description: descriptionController.text)
+                        .toMap());
 
                 Navigator.of(context).pop();
               },

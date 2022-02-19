@@ -2,11 +2,11 @@ import 'dart:convert';
 
 class Users {
   final String userName;
-  final String? address;
+  final String address;
   final String contactNo;
   Users({
     required this.userName,
-    this.address,
+    required this.address,
     required this.contactNo,
   });
 
@@ -32,9 +32,9 @@ class Users {
 
   factory Users.fromMap(Map<String, dynamic> map) {
     return Users(
-      userName: map['userName'],
-      address: map['address'],
-      contactNo: map['contactNo'],
+      userName: map['userName'] ?? '',
+      address: map['address'] ?? '',
+      contactNo: map['contactNo'] ?? '',
     );
   }
 

@@ -104,7 +104,7 @@ class _SignUpViewState extends State<SignUpView> {
                     email: emailController.text,
                     password: passwordController.text,
                   );
-                  firestore.collection('users').doc().set(
+                  firestore.collection('users').doc(auth.currentUser!.uid).set(
                         Users(
                                 userName: nameController.text,
                                 contactNo: contactController.text,

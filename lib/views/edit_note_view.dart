@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/note.dart';
 
@@ -26,6 +27,9 @@ class _EditNoteViewState extends State<EditNoteView> {
     descriptionController.text = widget.note!.description!;
     super.initState();
   }
+
+  final firestore = FirebaseFirestore.instance.collection('users');
+  final auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -73,7 +77,8 @@ class _EditNoteViewState extends State<EditNoteView> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  FirebaseFirestore.instance
+                  firestore
+                      .doc(auth.currentUser!.uid)
                       .collection('notes')
                       .doc(widget.noteId)
                       .update(Note(

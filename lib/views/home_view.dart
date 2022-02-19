@@ -15,9 +15,11 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-final firestore = FirebaseFirestore.instance;
-
 class _HomeViewState extends State<HomeView> {
+  final firestore = FirebaseFirestore.instance;
+  //final auth = FirebaseAuth.instance;
+  final currentUid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +55,7 @@ class _HomeViewState extends State<HomeView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const UserProfile(),
+                      builder: (context) => UserProfile(userId: currentUid!),
                     ),
                   );
                 },
@@ -64,25 +66,29 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: firestore.collection('notes').snapshots(),
-          builder: (context, snaphot) {
-            final noteId = snaphot.data?.docs.map((note) => note.id).toList();
+          stream: firestore
+              .collection('users')
+              .doc(currentUid!)
+              .collection('notes')
+              .snapshots(),
+          builder: (context, snapshot) {
+            final noteId = snapshot.data?.docs.map((note) => note.id).toList();
 
-            final notes = snaphot.data?.docs
+            final notes = snapshot.data?.docs
                 .map(
                     (note) => Note.fromMap(note.data() as Map<String, dynamic>))
                 .toList();
 
-            if (snaphot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
 
-            if (snaphot.hasError) {
+            if (snapshot.hasError) {
               return const Center(child: Text('Something Went Wrong'));
             }
-            if (!snaphot.hasData) {
+            if (!snapshot.hasData) {
               return const Center(
                 child: Text('Add New Data!'),
               );
