@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/note.dart';
+import 'package:note_firebase/views/sign_in_view.dart';
+import 'package:note_firebase/views/user_profile.dart';
 
 import 'add_note_view.dart';
 import 'note_detail_view.dart';
@@ -22,7 +25,43 @@ class _HomeViewState extends State<HomeView> {
         title: const Text('Notes '),
       ),
       drawer: Drawer(
-        child: Column(),
+        child: DrawerHeader(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 40,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SignInView(),
+                    ),
+                  );
+                },
+                child: const Text('SignOut'),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserProfile(),
+                    ),
+                  );
+                },
+                child: const Text('profile'),
+              ),
+            ],
+          ),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: firestore.collection('notes').snapshots(),
