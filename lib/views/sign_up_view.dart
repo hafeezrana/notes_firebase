@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/user.dart';
+import 'package:note_firebase/services/auth_service.dart';
+import 'package:note_firebase/services/firestore_service.dart';
 import 'package:note_firebase/widgets/reusable_textform.dart';
 
 import 'home_view.dart';
@@ -18,9 +19,10 @@ class _SignUpViewState extends State<SignUpView> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final contactController = TextEditingController();
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final authService = AuthService();
+  final firestore = FireStoreServie();
 
   @override
   void dispose() {
@@ -32,8 +34,6 @@ class _SignUpViewState extends State<SignUpView> {
     passwordController.text;
   }
 
-  final firestore = FirebaseFirestore.instance;
-  final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,17 +100,15 @@ class _SignUpViewState extends State<SignUpView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await auth.createUserWithEmailAndPassword(
-                    email: emailController.text,
-                    password: passwordController.text,
+                  await authService.createUser(
+                      email: emailController.text,
+                      password: passwordController.text);
+                  firestore.addUser(
+                    Users(
+                        userName: nameController.text,
+                        contactNo: contactController.text,
+                        address: addressController.text),
                   );
-                  firestore.collection('users').doc(auth.currentUser!.uid).set(
-                        Users(
-                                userName: nameController.text,
-                                contactNo: contactController.text,
-                                address: addressController.text)
-                            .toMap(),
-                      );
                   Navigator.push(
                     context,
                     MaterialPageRoute(

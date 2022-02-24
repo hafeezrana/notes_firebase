@@ -1,22 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/user.dart';
+import 'package:note_firebase/services/auth_service.dart';
+import 'package:note_firebase/services/firestore_service.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({
     Key? key,
-    required this.userId,
   }) : super(key: key);
-
-  final String userId;
 
   @override
   _UserProfileState createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
-  final firestore = FirebaseFirestore.instance;
-  //final user = FirebaseAuth.instance.currentUser;
+  final fireStoreService = FireStoreServie();
+  final authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +23,12 @@ class _UserProfileState extends State<UserProfile> {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: firestore.collection('users').doc(widget.userId).get(),
+      body: FutureBuilder<DocumentSnapshot>(
+        future: fireStoreService.readUser(),
         builder: (context, snapshot) {
           final user =
-              Users.fromMap(snapshot.data!.data() as Map<String, dynamic>);
-          print('============${widget.userId}');
+              Users.fromMap(snapshot.data?.data() as Map<String, dynamic>);
+          print('========================$user');
 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -42,16 +41,13 @@ class _UserProfileState extends State<UserProfile> {
           //   );
           // }
 
-          return Padding(
-            padding: const EdgeInsets.all(8),
-            child: Center(
-              child: Column(
-                children: [
-                  Text(user.userName),
-                  Text(user.address),
-                  Text(user.contactNo),
-                ],
-              ),
+          return Center(
+            child: Column(
+              children: [
+                Text(user.userName!),
+                Text(user.address!),
+                Text(user.contactNo!),
+              ],
             ),
           );
         },

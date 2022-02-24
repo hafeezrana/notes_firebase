@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/views/sign_up_view.dart';
 
 import 'home_view.dart';
@@ -14,6 +15,7 @@ class SignInView extends StatefulWidget {
 class _SignInViewState extends State<SignInView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final authService = AuthService();
 
   @override
   void dispose() {
@@ -69,10 +71,9 @@ class _SignInViewState extends State<SignInView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: emailController.text,
-                    password: passwordController.text,
-                  );
+                  await authService.loginIn(
+                      email: emailController.text,
+                      password: passwordController.text);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

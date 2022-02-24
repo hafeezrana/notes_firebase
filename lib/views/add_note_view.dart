@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/note.dart';
+import 'package:note_firebase/services/firestore_service.dart';
 
 class AddNoteView extends StatefulWidget {
   const AddNoteView({
@@ -15,6 +16,7 @@ class AddNoteView extends StatefulWidget {
 class _AddNoteViewState extends State<AddNoteView> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final fireStoreServie = FireStoreServie();
 
   @override
   void dispose() {
@@ -65,15 +67,11 @@ class _AddNoteViewState extends State<AddNoteView> {
             ),
             ElevatedButton(
               onPressed: () {
-                firestore
-                    .collection('users')
-                    .doc(auth.currentUser!.uid)
-                    .collection('notes')
-                    .add(Note(
-                            title: titleController.text,
-                            description: descriptionController.text)
-                        .toMap());
-
+                fireStoreServie.addNote(
+                  Note(
+                      title: titleController.text,
+                      description: descriptionController.text),
+                );
                 Navigator.of(context).pop();
               },
               child: const Text('Add '),
