@@ -22,7 +22,7 @@ class _SignUpViewState extends State<SignUpView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final authService = AuthService();
-  final firestore = FireStoreServie();
+  final firestore = FireStoreService();
 
   @override
   void dispose() {
@@ -99,16 +99,16 @@ class _SignUpViewState extends State<SignUpView> {
             ),
             ElevatedButton(
               onPressed: () async {
+                final newUser = UserModel(
+                  userName: nameController.text,
+                  contactNo: contactController.text,
+                  address: addressController.text,
+                );
                 try {
                   await authService.createUser(
                       email: emailController.text,
                       password: passwordController.text);
-                  firestore.addUser(
-                    Users(
-                        userName: nameController.text,
-                        contactNo: contactController.text,
-                        address: addressController.text),
-                  );
+                  await firestore.addUser(newUser);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -154,8 +154,7 @@ class _SignUpViewState extends State<SignUpView> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const SignInView(),
                   ),

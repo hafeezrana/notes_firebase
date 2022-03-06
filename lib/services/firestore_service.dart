@@ -4,7 +4,7 @@ import 'package:note_firebase/services/auth_service.dart';
 
 import '../models/user.dart';
 
-class FireStoreServie {
+class FireStoreService {
   final userData = FirebaseFirestore.instance.collection('users');
   final noteData = FirebaseFirestore.instance.collection('notes');
 
@@ -12,15 +12,21 @@ class FireStoreServie {
 
   ///  functions for [UserProfileData]
 
-  Future<DocumentSnapshot<Map<String, dynamic>?>> readUser() async {
-    return await userData.doc(authService.userId).get();
+  Future<DocumentSnapshot<UserModel>> fetchUser() async {
+    return userData
+        .doc(authService.userId)
+        .withConverter<UserModel>(
+          fromFirestore: (snapshot, _) => UserModel.fromMap(snapshot.data()!),
+          toFirestore: (model, _) => model.toMap(),
+        )
+        .get();
   }
 
-  Future<void> addUser(Users user) {
+  Future<void> addUser(UserModel user) {
     return userData.doc(authService.userId).set(user.toMap());
   }
 
-  Future<void> editUser(Users user) {
+  Future<void> editUser(UserModel user) {
     return userData.doc(authService.userId).update(user.toMap());
   }
 
@@ -32,15 +38,23 @@ class FireStoreServie {
         );
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchNote() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> watchNote() {
     return userData.doc(authService.userId).collection('notes').snapshots();
   }
 
-  Future<void> editNote(Note notes) async {
+  Future<void> editNote(Note notes, String noteID) async {
     return await userData
         .doc(authService.userId)
         .collection('notes')
-        .doc()
+        .doc(noteID)
         .update(notes.toMap());
+  }
+
+  Future<void> deleteNote(String id) async {
+    return await userData
+        .doc(authService.userId)
+        .collection('notes')
+        .doc(id)
+        .delete();
   }
 }

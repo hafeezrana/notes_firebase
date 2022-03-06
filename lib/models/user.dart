@@ -1,21 +1,21 @@
 import 'dart:convert';
 
-class Users {
+class UserModel {
   final String? userName;
   final String? address;
   final String? contactNo;
-  Users({
+  UserModel({
     this.userName,
     this.address,
     this.contactNo,
   });
 
-  Users copyWith({
+  UserModel copyWith({
     String? userName,
     String? address,
     String? contactNo,
   }) {
-    return Users(
+    return UserModel(
       userName: userName ?? this.userName,
       address: address ?? this.address,
       contactNo: contactNo ?? this.contactNo,
@@ -30,8 +30,8 @@ class Users {
     };
   }
 
-  factory Users.fromMap(Map<String, dynamic> map) {
-    return Users(
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
       userName: map['userName'],
       address: map['address'],
       contactNo: map['contactNo'],
@@ -40,7 +40,8 @@ class Users {
 
   String toJson() => json.encode(toMap());
 
-  factory Users.fromJson(String source) => Users.fromMap(json.decode(source));
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source));
 
   @override
   String toString() =>
@@ -50,7 +51,7 @@ class Users {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Users &&
+    return other is UserModel &&
         other.userName == userName &&
         other.address == address &&
         other.contactNo == contactNo;

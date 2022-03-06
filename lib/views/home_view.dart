@@ -10,7 +10,9 @@ import 'add_note_view.dart';
 import 'note_detail_view.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -18,7 +20,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final authService = AuthService();
-  final fireStoreServie = FireStoreServie();
+  final fireStoreServie = FireStoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: fireStoreServie.fetchNote(),
+        stream: fireStoreServie.watchNote(),
         builder: (context, snapshot) {
           final noteId = snapshot.data?.docs.map((note) => note.id).toList();
 
@@ -109,11 +111,36 @@ class _HomeViewState extends State<HomeView> {
                   title: Text(note.title!),
                   trailing: IconButton(
                     onPressed: () {
-                      fireStoreServie.userData
-                          .doc(authService.userId)
-                          .collection('notes')
-                          .doc(noteId![index])
-                          .delete();
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              content:
+                                  const Text('Do you really want to delete?'),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('No'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        fireStoreServie
+                                            .deleteNote(noteId![index]);
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          });
                     },
                     icon: const Icon(Icons.delete),
                   ),

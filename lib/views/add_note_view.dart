@@ -16,7 +16,7 @@ class AddNoteView extends StatefulWidget {
 class _AddNoteViewState extends State<AddNoteView> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final fireStoreServie = FireStoreServie();
+  final fireStoreServie = FireStoreService();
 
   @override
   void dispose() {

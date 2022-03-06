@@ -28,7 +28,7 @@ class _EditNoteViewState extends State<EditNoteView> {
     super.initState();
   }
 
-  final fireStoreService = FireStoreServie();
+  final fireStoreService = FireStoreService();
   final authService = AuthService();
 
   @override
@@ -77,16 +77,13 @@ class _EditNoteViewState extends State<EditNoteView> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  fireStoreService.userData
-                      .doc(authService.userId)
-                      .collection('notes')
-                      .doc(widget.noteId)
-                      .update(
-                        Note(
-                          title: titleController.text,
-                          description: descriptionController.text,
-                        ).toMap(),
-                      );
+                  fireStoreService.editNote(
+                      Note(
+                        title: titleController.text,
+                        description: descriptionController.text,
+                      ),
+                      widget.noteId!);
+
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
