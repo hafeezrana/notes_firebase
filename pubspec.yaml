@@ -17,6 +17,7 @@ dependencies:
   firebase_auth: ^3.3.7
   email_validator: ^2.0.1
   provider: ^6.0.2
+  
 
 dev_dependencies:
   flutter_test:

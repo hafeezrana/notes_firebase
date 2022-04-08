@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:note_firebase/models/user.dart';
-import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/services/firestore_service.dart';
+import 'package:provider/provider.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({
@@ -18,14 +18,12 @@ class _UserProfileState extends State<UserProfile> {
   final addressController = TextEditingController();
   final contactInfoController = TextEditingController();
 
-  final fireStoreService = FireStoreService();
-  final authService = AuthService();
   late Future<DocumentSnapshot<UserModel>> _fetchUser;
 
   @override
   void initState() {
     super.initState();
-    _fetchUser = fireStoreService.fetchUser();
+    _fetchUser = context.read<FireStoreService>().fetchUser();
   }
 
   @override
@@ -99,13 +97,13 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      fireStoreService.editUser(
-                        UserModel(
-                          userName: nameController.text.trim(),
-                          address: addressController.text.trim(),
-                          contactNo: contactInfoController.text.trim(),
-                        ),
-                      );
+                      context.read<FireStoreService>().editUser(
+                            UserModel(
+                              userName: nameController.text.trim(),
+                              address: addressController.text.trim(),
+                              contactNo: contactInfoController.text.trim(),
+                            ),
+                          );
                       Navigator.pop(context);
                     },
                     child: const Text('Save'),

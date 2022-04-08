@@ -4,6 +4,7 @@ import 'package:note_firebase/models/user.dart';
 import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/services/firestore_service.dart';
 import 'package:note_firebase/widgets/reusable_textform.dart';
+import 'package:provider/provider.dart';
 
 import 'home_view.dart';
 import 'sign_in_view.dart';
@@ -21,8 +22,6 @@ class _SignUpViewState extends State<SignUpView> {
   final contactController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final authService = AuthService();
-  final firestore = FireStoreService();
 
   @override
   void dispose() {
@@ -105,10 +104,10 @@ class _SignUpViewState extends State<SignUpView> {
                   address: addressController.text,
                 );
                 try {
-                  await authService.createUser(
+                  await context.read<AuthService>().createUser(
                       email: emailController.text,
                       password: passwordController.text);
-                  await firestore.addUser(newUser);
+                  await context.read<FireStoreService>().addUser(newUser);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

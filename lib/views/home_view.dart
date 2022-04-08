@@ -5,6 +5,7 @@ import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/services/firestore_service.dart';
 import 'package:note_firebase/views/sign_in_view.dart';
 import 'package:note_firebase/views/user_profile.dart';
+import 'package:provider/provider.dart';
 
 import 'add_note_view.dart';
 import 'note_detail_view.dart';
@@ -19,11 +20,10 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final authService = AuthService();
-  final fireStoreServie = FireStoreService();
-
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<FireStoreService>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes '),
@@ -38,7 +38,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  authService.signOut();
+                  context.read<AuthService>().signOut();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -67,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: fireStoreServie.watchNote(),
+        stream: provider.watchNote(),
         builder: (context, snapshot) {
           final noteId = snapshot.data?.docs.map((note) => note.id).toList();
 
@@ -130,8 +130,7 @@ class _HomeViewState extends State<HomeView> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        fireStoreServie
-                                            .deleteNote(noteId![index]);
+                                        provider.deleteNote(noteId![index]);
                                         Navigator.pop(context);
                                       },
                                       child: const Text('Yes'),
