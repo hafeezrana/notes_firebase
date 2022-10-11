@@ -1,41 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/models/user.dart';
 import 'package:note_firebase/services/firestore_service.dart';
-import 'package:provider/provider.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({
-    Key? key,
-  }) : super(key: key);
+class UserProfile extends ConsumerWidget {
+//   const UserProfile({
+//     Key? key,
+//   }) : super(key: key);
 
-  @override
-  _UserProfileState createState() => _UserProfileState();
-}
+//   @override
+//   _UserProfileState createState() => _UserProfileState();
+// }
 
-class _UserProfileState extends State<UserProfile> {
+// class _UserProfileState extends State<UserProfile> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final contactInfoController = TextEditingController();
 
   late Future<DocumentSnapshot<UserModel>> _fetchUser;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchUser = context.read<FireStoreService>().fetchUser();
-  }
+  // @override
+  // void initState() {
+  //   // super.initState();
+  //   _fetchUser = context.read<FireStoreService>().fetchUser();
+  // }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   nameController.text;
+  //   addressController.text;
+  //   contactInfoController.text;
+  // }
 
   @override
-  void dispose() {
-    super.dispose();
-    nameController.text;
-    addressController.text;
-    contactInfoController.text;
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    _fetchUser = ref.read(notesFireStoreProvider).fetchUser();
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -97,7 +99,7 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<FireStoreService>().editUser(
+                      ref.read(notesFireStoreProvider).editUser(
                             UserModel(
                               userName: nameController.text.trim(),
                               address: addressController.text.trim(),

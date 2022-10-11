@@ -1,40 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/models/user.dart';
 import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/services/firestore_service.dart';
 import 'package:note_firebase/widgets/reusable_textform.dart';
-import 'package:provider/provider.dart';
 
 import 'home_view.dart';
 import 'sign_in_view.dart';
 
-class SignUpView extends StatefulWidget {
-  const SignUpView({Key? key}) : super(key: key);
-
-  @override
-  _SignUpViewState createState() => _SignUpViewState();
-}
-
-class _SignUpViewState extends State<SignUpView> {
+class SignUpView extends ConsumerWidget {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final contactController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    super.dispose();
-    nameController.text;
-    addressController.text;
-    contactController.text;
-    emailController.text;
-    passwordController.text;
-  }
+  //   @override
+  // void dispose() {
+  //   super.dispose();
+  //   nameController.text;
+  //   addressController.text;
+  //   contactController.text;
+  //   emailController.text;
+  //   passwordController.text;
+  // }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SignUp'),
@@ -104,10 +97,10 @@ class _SignUpViewState extends State<SignUpView> {
                   address: addressController.text,
                 );
                 try {
-                  await context.read<AuthService>().createUser(
+                  await ref.watch(notesAuthProvider).createUser(
                       email: emailController.text,
                       password: passwordController.text);
-                  await context.read<FireStoreService>().addUser(newUser);
+                  await ref.watch(notesFireStoreProvider).addUser(newUser);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -116,7 +109,6 @@ class _SignUpViewState extends State<SignUpView> {
                   );
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {
-                    setState(() {});
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
@@ -124,7 +116,6 @@ class _SignUpViewState extends State<SignUpView> {
                       ),
                     );
                   } else if (e.code == 'email-already-in-use') {
-                    setState(() {});
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
@@ -155,7 +146,7 @@ class _SignUpViewState extends State<SignUpView> {
               onTap: () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const SignInView(),
+                    builder: (context) => SignInView(),
                   ),
                 );
               },

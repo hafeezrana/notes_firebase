@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/models/note.dart';
 import 'package:note_firebase/services/auth_service.dart';
 
 import '../models/user.dart';
+
+final notesFireStoreProvider = Provider<FireStoreService>((ref) {
+  return FireStoreService();
+});
 
 class FireStoreService {
   final userData = FirebaseFirestore.instance.collection('users');

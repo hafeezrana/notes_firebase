@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/models/note.dart';
 import 'package:note_firebase/services/firestore_service.dart';
-import 'package:provider/provider.dart';
 
-class AddNoteView extends StatefulWidget {
-  const AddNoteView({
-    Key? key,
-  }) : super(key: key);
+class AddNoteView extends ConsumerWidget {
+//   const AddNoteView({
+//     Key? key,
+//   }) : super(key: key);
 
-  @override
-  _AddNoteViewState createState() => _AddNoteViewState();
-}
+//   @override
+//   ConsumerState<ConsumerStatefulWidget> createState() =>
+//       throw UnimplementedError();
+// }
 
-class _AddNoteViewState extends State<AddNoteView> {
+// class _AddNoteViewState extends State<AddNoteView> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
   @override
   void dispose() {
-    super.dispose();
+    // super.dispose();
     titleController.dispose();
     descriptionController.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Note Page'),
@@ -62,7 +63,7 @@ class _AddNoteViewState extends State<AddNoteView> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<FireStoreService>().addNote(
+                ref.watch(notesFireStoreProvider).addNote(
                       Note(
                           title: titleController.text,
                           description: descriptionController.text),

@@ -1,28 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/models/note.dart';
 import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/services/firestore_service.dart';
 import 'package:note_firebase/views/sign_in_view.dart';
 import 'package:note_firebase/views/user_profile.dart';
-import 'package:provider/provider.dart';
 
 import 'add_note_view.dart';
 import 'note_detail_view.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<FireStoreService>();
+    final provider = ref.read(notesFireStoreProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -38,11 +38,11 @@ class _HomeViewState extends State<HomeView> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  context.read<AuthService>().signOut();
+                  ref.read(notesAuthProvider).signOut();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const SignInView(),
+                      builder: (context) => SignInView(),
                     ),
                   );
                 },
@@ -56,7 +56,7 @@ class _HomeViewState extends State<HomeView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const UserProfile(),
+                      builder: (context) => UserProfile(),
                     ),
                   );
                 },
@@ -163,7 +163,7 @@ class _HomeViewState extends State<HomeView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const AddNoteView()),
+            MaterialPageRoute(builder: (_) => AddNoteView()),
           );
         },
         child: const Icon(Icons.add),

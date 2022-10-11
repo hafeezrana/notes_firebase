@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/models/note.dart';
 import 'package:note_firebase/services/firestore_service.dart';
-import 'package:provider/provider.dart';
 
-class EditNoteView extends StatefulWidget {
+class EditNoteView extends ConsumerStatefulWidget {
   const EditNoteView({
     required this.note,
     Key? key,
@@ -14,10 +14,10 @@ class EditNoteView extends StatefulWidget {
   final String? noteId;
 
   @override
-  _EditNoteViewState createState() => _EditNoteViewState();
+  ConsumerState<EditNoteView> createState() => _EditNoteViewState();
 }
 
-class _EditNoteViewState extends State<EditNoteView> {
+class _EditNoteViewState extends ConsumerState<EditNoteView> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
@@ -74,7 +74,7 @@ class _EditNoteViewState extends State<EditNoteView> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  context.read<FireStoreService>().editNote(
+                  ref.read(notesFireStoreProvider).editNote(
                       Note(
                         title: titleController.text,
                         description: descriptionController.text,

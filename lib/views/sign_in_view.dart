@@ -1,31 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_firebase/services/auth_service.dart';
 import 'package:note_firebase/views/sign_up_view.dart';
-import 'package:provider/provider.dart';
 
 import 'home_view.dart';
 
-class SignInView extends StatefulWidget {
-  const SignInView({Key? key}) : super(key: key);
-
-  @override
-  _SignInViewState createState() => _SignInViewState();
-}
-
-class _SignInViewState extends State<SignInView> {
+class SignInView extends ConsumerWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    super.dispose();
-    emailController.text;
-    passwordController.text;
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   emailController.text;
+  //   passwordController.text;
+  // }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SignIn'),
@@ -71,7 +64,7 @@ class _SignInViewState extends State<SignInView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await context.read<AuthService>().loginIn(
+                  await ref.watch(notesAuthProvider).loginIn(
                       email: emailController.text,
                       password: passwordController.text);
                   Navigator.push(
@@ -82,7 +75,6 @@ class _SignInViewState extends State<SignInView> {
                   );
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'user-not-found') {
-                    setState(() {});
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
@@ -90,7 +82,6 @@ class _SignInViewState extends State<SignInView> {
                       ),
                     );
                   } else if (e.code == 'wrong-password') {
-                    setState(() {});
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
@@ -121,7 +112,7 @@ class _SignInViewState extends State<SignInView> {
               onTap: () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const SignUpView(),
+                    builder: (context) => SignUpView(),
                   ),
                 );
               },
