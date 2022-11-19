@@ -15,6 +15,12 @@ class HomeView extends ConsumerStatefulWidget {
     Key? key,
   }) : super(key: key);
 
+  static Route<void> route() {
+    return MaterialPageRoute(
+      builder: (context) => const HomeView(),
+    );
+  }
+
   @override
   ConsumerState<HomeView> createState() => _HomeViewState();
 }
@@ -39,12 +45,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
               ElevatedButton(
                 onPressed: () {
                   ref.read(notesAuthProvider).signOut();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignInView(),
-                    ),
-                  );
+                  Navigator.of(context).push(SignInView.route());
                 },
                 child: const Text('SignOut'),
               ),
@@ -115,12 +116,10 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           context: context,
                           builder: (_) {
                             return AlertDialog(
-                              content:
-                                  const Text('Do you really want to delete?'),
+                              content: const Text('Do you really want to delete?'),
                               actions: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     TextButton(
                                       onPressed: () {

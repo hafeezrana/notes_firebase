@@ -6,20 +6,25 @@ import 'package:note_firebase/services/auth_service.dart';
 import '../models/user.dart';
 
 final notesFireStoreProvider = Provider<FireStoreService>((ref) {
-  return FireStoreService();
+  final authService = ref.read(notesAuthProvider);
+  return FireStoreService(authService);
 });
 
 class FireStoreService {
+  FireStoreService(this.authService);
+
   final userData = FirebaseFirestore.instance.collection('users');
   final noteData = FirebaseFirestore.instance.collection('notes');
 
-  final authService = AuthService();
+  final AuthService authService;
 
   ///  functions for [UserProfileData]
 
+  String get _uid => authService.authUser.uid;
+
   Future<DocumentSnapshot<UserModel>> fetchUser() async {
     return userData
-        .doc(authService.userId)
+        .doc(_uid)
         .withConverter<UserModel>(
           fromFirestore: (snapshot, _) => UserModel.fromMap(snapshot.data()!),
           toFirestore: (model, _) => model.toMap(),
@@ -28,36 +33,40 @@ class FireStoreService {
   }
 
   Future<void> addUser(UserModel user) {
-    return userData.doc(authService.userId).set(user.toMap());
+    return userData.doc(_uid).set(user.toMap());
   }
 
   Future<void> editUser(UserModel user) {
-    return userData.doc(authService.userId).update(user.toMap());
+    return userData.doc(_uid).update(user.toMap());
   }
 
   ///  functions for [UserNotes]
 
   Future<void> addNote(Note notes) {
-    return userData.doc(authService.userId).collection('notes').add(
-          notes.toMap(),
-        );
+    return userData //
+        .doc(_uid)
+        .collection('notes')
+        .add(notes.toMap());
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> watchNote() {
-    return userData.doc(authService.userId).collection('notes').snapshots();
+    return userData //
+        .doc(_uid)
+        .collection('notes')
+        .snapshots();
   }
 
   Future<void> editNote(Note notes, String noteID) async {
-    return await userData
-        .doc(authService.userId)
+    return await userData //
+        .doc(_uid)
         .collection('notes')
         .doc(noteID)
         .update(notes.toMap());
   }
 
   Future<void> deleteNote(String id) async {
-    return await userData
-        .doc(authService.userId)
+    return await userData //
+        .doc(_uid)
         .collection('notes')
         .doc(id)
         .delete();
